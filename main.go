@@ -42,10 +42,11 @@ func logContextMiddleware(logger log.Logger) func(http.Handler) http.Handler {
 func reqLogMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		log.With("path", req.URL.Path).From(req.Context()).Info("Request")
+		next.ServeHTTP(res, req)
 	})
 }
 
 func helloHandler(res http.ResponseWriter, req *http.Request) {
-	log.From(req.Context()).Debug("Doing a thing now")
+	log.With("some", "field").From(req.Context()).Debug("Doing a thing now")
 	res.Write([]byte("OK\n"))
 }
